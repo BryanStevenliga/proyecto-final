@@ -90,8 +90,11 @@ jobs:
 
             docker exec backzeusgym_container a2enmod rewrite
             docker exec backzeusgym_container apache2ctl configtest
-            # restart (no graceful): un módulo recién habilitado con a2enmod solo se carga con un restart completo
-            docker exec backzeusgym_container apache2ctl restart
+            # restart (no graceful): un módulo recién habilitado con a2enmod solo se carga con un restart completo.
+            # apache2ctl restart siempre devuelve un código de salida distinto de cero en este contenedor
+            # (Apache corre como PID 1 en primer plano y el restart le manda una señal de terminación),
+            # aunque el restart en sí funcione bien — por eso el || true, para no cortar el script con set -e.
+            docker exec backzeusgym_container apache2ctl restart || true
 
             # --- Permisos y caché de Laravel ---
             docker exec backzeusgym_container chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
