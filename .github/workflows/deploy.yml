@@ -75,6 +75,13 @@ jobs:
             # --- Frontend: copiar el sitio estático dentro del contenedor nginx ---
             docker cp "$TMP/frontend/." zeusgym_container:/usr/share/nginx/html/
 
+            # --- PHP: pdo_pgsql no viene en la imagen base y vive en la capa del contenedor,
+            #     no en el volumen, así que se pierde si el contenedor se recrea (ya pasó dos veces) ---
+            docker exec backzeusgym_container php -m | grep -qi pdo_pgsql || {
+              docker exec backzeusgym_container bash -c "apt-get update -qq && apt-get install -y -qq libpq-dev"
+              docker exec backzeusgym_container docker-php-ext-install pdo_pgsql pgsql
+            }
+
             # --- Apache: DocumentRoot debe apuntar a /public (idempotente: el ancla $ evita reaplicarlo dos veces) ---
             docker exec backzeusgym_container sed -i "s#DocumentRoot /var/www/html\$#DocumentRoot /var/www/html/public#" "$CONF"
 
@@ -83,7 +90,8 @@ jobs:
 
             docker exec backzeusgym_container a2enmod rewrite
             docker exec backzeusgym_container apache2ctl configtest
-            docker exec backzeusgym_container apache2ctl graceful
+            # restart (no graceful): un módulo recién habilitado con a2enmod solo se carga con un restart completo
+            docker exec backzeusgym_container apache2ctl restart
 
             # --- Permisos y caché de Laravel ---
             docker exec backzeusgym_container chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
