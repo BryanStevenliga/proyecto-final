@@ -28,7 +28,9 @@ jobs:
 
       - name: Escribir el .env de producción
         working-directory: zeusgym-back
-        run: echo "${{ secrets.BACKEND_ENV_FILE }}" > .env
+        env:
+          ENV_CONTENT: ${{ secrets.BACKEND_ENV_FILE }}
+        run: printf '%s' "$ENV_CONTENT" > .env
 
       - name: Copiar backend al VPS (carpeta temporal)
         uses: appleboy/scp-action@v0.1.7
@@ -63,6 +65,9 @@ jobs:
             set -e
             CONF=/etc/apache2/sites-enabled/000-default.conf
             TMP=/home/${{ secrets.VPS_USER }}/deploy_tmp
+
+            # --- Backend: borrar el .env anterior antes de copiar (defensivo, evita basura previa) ---
+            docker exec backzeusgym_container rm -f /var/www/html/.env
 
             # --- Backend: copiar código dentro del contenedor de Laravel ---
             docker cp "$TMP/backend/." backzeusgym_container:/var/www/html/
