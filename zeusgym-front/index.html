@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zeus Gym | Entrena como un Dios</title>
+<meta name="description" content="Zeus Gym - El gimnasio que transformará tu cuerpo y tu mente. Equipos de última generación, entrenadores certificados y sedes en Quito.">
+
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com"></script>
+<!-- FontAwesome CDN -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Bebas+Neue&display=swap" rel="stylesheet">
+
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          'zeus-gold': '#FFB612',
+          'zeus-dark': '#0A0A0A',
+          'zeus-gray': '#141414',
+          'zeus-gray-light': '#1F1F1F',
+        },
+        fontFamily: {
+          'sans': ['Inter', 'sans-serif'],
+          'display': ['Bebas Neue', 'sans-serif'],
+        },
+        animation: {
+          'pulse-slow': 'pulse 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        }
+      }
+    }
+  }
+</script>
+
+<style>
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Inter', sans-serif; background-color: #0A0A0A; }
+  .font-display { font-family: 'Bebas Neue', sans-serif; letter-spacing: 0.03em; }
+
+  ::-webkit-scrollbar { width: 10px; }
+  ::-webkit-scrollbar-track { background: #0A0A0A; }
+  ::-webkit-scrollbar-thumb { background: #FFB612; border-radius: 10px; }
+  ::-webkit-scrollbar-thumb:hover { background: #e0a30f; }
+
+  .hero-bg {
+    background-image: url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=2070&auto=format&fit=crop');
+    background-size: cover;
+    background-position: center;
+  }
+
+  .glass-nav {
+    background: rgba(10, 10, 10, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  .plan-card-black {
+    background: linear-gradient(145deg, #1a1a1a 0%, #0a0a0a 100%);
+    border: 1px solid #FFB612;
+  }
+
+  .whatsapp-float {
+    animation: pulse-wa 2s infinite;
+  }
+  @keyframes pulse-wa {
+    0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7); }
+    70% { box-shadow: 0 0 0 15px rgba(37, 211, 102, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
+  }
+
+  .accordion-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease-in-out;
+  }
+
+  .accordion-icon {
+    transition: transform 0.3s ease-in-out;
+  }
+
+  .card-hover {
+    transition: box-shadow 0.3s ease;
+  }
+  .card-hover:hover {
+    box-shadow: 0 20px 40px rgba(255, 182, 18, 0.15);
+  }
+
+  .fade-in {
+    animation: fadeIn 0.8s ease-in-out;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .mobile-menu {
+    transition: max-height 0.4s ease-in-out, opacity 0.3s ease-in-out;
+  }
+
+  .skeleton {
+    background: linear-gradient(90deg, #1a1a1a 25%, #232323 50%, #1a1a1a 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+  }
+  @keyframes skeleton-loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  /* Efecto de brillo (shine) para el botón del Plan Black */
+  .btn-shine {
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-shine::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -75%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+    transform: skewX(-25deg);
+    animation: shine 2.8s infinite;
+  }
+  @keyframes shine {
+    0% { left: -75%; }
+    30% { left: 125%; }
+    100% { left: 125%; }
+  }
+
+  /* Modal */
+  .modal-box {
+    transition: transform 0.3s ease, opacity 0.3s ease;
+  }
+
+  input[type="text"], input[type="email"], input[type="tel"], select {
+    color-scheme: dark;
+  }
+</style>
+</head>
+<body class="bg-zeus-dark text-white antialiased">
+
+<!-- ============ NAVBAR ============ -->
+<nav id="navbar" class="fixed top-0 left-0 w-full z-50 glass-nav border-b border-white/10 transition-all duration-300">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-20">
+      <!-- Logo -->
+      <a href="#inicio" class="flex items-center gap-2 group">
+        <i class="fa-solid fa-bolt text-zeus-gold text-3xl group-hover:rotate-12 transition-transform duration-300"></i>
+        <span class="font-display text-3xl tracking-wider text-white">ZEUS <span class="text-zeus-gold">GYM</span></span>
+      </a>
+
+      <!-- Desktop Menu -->
+      <div class="hidden md:flex items-center gap-8">
+        <a href="#inicio" class="text-sm font-semibold uppercase tracking-wide text-gray-200 hover:text-zeus-gold transition-colors duration-200">Inicio</a>
+        <a href="#sedes" class="text-sm font-semibold uppercase tracking-wide text-gray-200 hover:text-zeus-gold transition-colors duration-200">Sedes</a>
+        <a href="#planes" class="text-sm font-semibold uppercase tracking-wide text-gray-200 hover:text-zeus-gold transition-colors duration-200">Planes</a>
+        <a href="#nosotros" class="text-sm font-semibold uppercase tracking-wide text-gray-200 hover:text-zeus-gold transition-colors duration-200">Quiénes Somos</a>
+        <a href="#reglamento" class="text-sm font-semibold uppercase tracking-wide text-gray-200 hover:text-zeus-gold transition-colors duration-200">Reglas</a>
+      </div>
+
+      <div class="hidden md:block">
+        <a href="#planes" class="bg-zeus-gold text-zeus-dark font-bold uppercase text-sm px-6 py-2.5 rounded-full hover:bg-white hover:scale-105 transition-all duration-300 shadow-lg shadow-zeus-gold/20">
+          Inscríbete
+        </a>
+      </div>
+
+      <!-- Hamburger Button -->
+      <button id="hamburger-btn" aria-label="Abrir menú" class="md:hidden text-white text-2xl focus:outline-none z-50">
+        <i id="hamburger-icon" class="fa-solid fa-bars"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile Menu -->
+  <div id="mobile-menu" class="mobile-menu md:hidden max-h-0 opacity-0 overflow-hidden bg-zeus-dark/98 border-t border-white/10">
+    <div class="flex flex-col px-6 py-6 gap-5">
+      <a href="#inicio" class="mobile-link text-lg font-semibold text-gray-200 hover:text-zeus-gold transition-colors duration-200">Inicio</a>
+      <a href="#sedes" class="mobile-link text-lg font-semibold text-gray-200 hover:text-zeus-gold transition-colors duration-200">Sedes</a>
+      <a href="#planes" class="mobile-link text-lg font-semibold text-gray-200 hover:text-zeus-gold transition-colors duration-200">Planes</a>
+      <a href="#nosotros" class="mobile-link text-lg font-semibold text-gray-200 hover:text-zeus-gold transition-colors duration-200">Quiénes Somos</a>
+      <a href="#reglamento" class="mobile-link text-lg font-semibold text-gray-200 hover:text-zeus-gold transition-colors duration-200">Reglas</a>
+      <a href="#planes" class="mobile-link bg-zeus-gold text-zeus-dark font-bold uppercase text-sm px-6 py-3 rounded-full text-center mt-2">
+        Inscríbete ya
+      </a>
+    </div>
+  </div>
+</nav>
+
+<!-- ============ HERO SECTION ============ -->
+<header id="inicio" class="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden">
+  <!-- Fondo -->
+  <div class="hero-bg absolute inset-0 z-0"></div>
+  <!-- Degradado oscuro para contraste perfecto del texto -->
+  <div class="absolute inset-0 z-[1] bg-gradient-to-b from-black/90 via-black/60 to-black"></div>
+  <div class="absolute inset-0 z-[1] bg-gradient-to-r from-black/70 via-transparent to-black/70"></div>
+
+  <div class="max-w-5xl mx-auto px-6 text-center relative z-10">
+    <span class="inline-block bg-zeus-gold/10 border border-zeus-gold text-zeus-gold uppercase text-xs sm:text-sm font-bold tracking-widest px-4 py-2 rounded-full mb-6 fade-in">
+      <i class="fa-solid fa-fire mr-2"></i> El poder está en ti
+    </span>
+    <h1 class="font-display text-6xl sm:text-7xl md:text-8xl lg:text-9xl leading-[0.9] mb-6 fade-in">
+      DESATA AL <span class="text-zeus-gold">DIOS</span> QUE LLEVAS DENTRO
+    </h1>
+    <p class="text-gray-300 text-base sm:text-lg md:text-xl max-w-2xl mx-auto mb-10 fade-in">
+      En Zeus Gym convertimos la disciplina en poder. Equipos de última generación, entrenadores certificados y una comunidad que te empuja al Olimpo de tu mejor versión.
+    </p>
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-4 fade-in">
+      <a href="#planes" class="w-full sm:w-auto bg-zeus-gold text-zeus-dark font-extrabold uppercase text-base px-10 py-4 rounded-full hover:bg-white hover:scale-105 transition-all duration-300 shadow-2xl shadow-zeus-gold/30 flex items-center justify-center gap-2">
+        <i class="fa-solid fa-bolt"></i> ¡Inscríbete ya!
+      </a>
+      <a href="#sedes" class="w-full sm:w-auto border-2 border-white/30 text-white font-bold uppercase text-base px-10 py-4 rounded-full hover:bg-white/10 hover:border-white transition-all duration-300 flex items-center justify-center gap-2">
+        <i class="fa-solid fa-location-dot"></i> Ver Sedes
+      </a>
+    </div>
+  </div>
+
+  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce z-10">
+    <i class="fa-solid fa-chevron-down text-zeus-gold text-2xl"></i>
+  </div>
+</header>
+
+<!-- ============ QUIENES SOMOS ============ -->
+<section id="nosotros" class="bg-zeus-dark py-24 px-6">
+  <div class="max-w-7xl mx-auto">
+    <div class="grid lg:grid-cols-2 gap-16 items-center mb-20">
+      <div>
+        <span class="text-zeus-gold uppercase text-sm font-bold tracking-widest">Quiénes Somos</span>
+        <h2 class="font-display text-5xl md:text-6xl mt-3 mb-6 leading-tight">MÁS QUE UN GIMNASIO,<br> UN <span class="text-zeus-gold">TEMPLO</span> DE FUERZA</h2>
+        <p class="text-gray-400 text-lg leading-relaxed mb-6">
+          Nuestra misión es forjar cuerpos y mentes imparables. Desde 2015, Zeus Gym ha sido el hogar de miles de atletas que han decidido tomar el control de su físico y su bienestar en instalaciones de clase mundial.
+        </p>
+        <p class="text-gray-400 text-lg leading-relaxed">
+          Creemos que la fuerza no se hereda, se construye. Por eso ponemos a tu disposición la mejor tecnología, el mejor equipo humano y espacios diseñados para que cada entrenamiento se sienta como una victoria.
+        </p>
+      </div>
+      <div class="relative">
+        <img src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=1974&auto=format&fit=crop" alt="Entrenamiento en Zeus Gym" class="rounded-2xl w-full h-[450px] object-cover shadow-2xl">
+        <div class="absolute -bottom-6 -left-6 bg-zeus-gold text-zeus-dark p-6 rounded-2xl shadow-xl hidden sm:block">
+          <p class="font-display text-4xl leading-none">+10K</p>
+          <p class="text-xs font-bold uppercase tracking-wide">Miembros Activos</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Beneficios -->
+    <div class="grid md:grid-cols-3 gap-8">
+      <div class="card-hover hover:scale-105 transition duration-300 bg-zeus-gray border border-white/5 rounded-2xl p-8 text-center">
+        <div class="w-16 h-16 mx-auto mb-5 rounded-full bg-zeus-gold/10 flex items-center justify-center">
+          <i class="fa-solid fa-dumbbell text-zeus-gold text-3xl"></i>
+        </div>
+        <h3 class="font-bold text-xl mb-3">Equipos Pro</h3>
+        <p class="text-gray-400 text-sm leading-relaxed">Maquinaria de última generación importada, mantenida y actualizada constantemente para tu máximo rendimiento.</p>
+      </div>
+      <div class="card-hover hover:scale-105 transition duration-300 bg-zeus-gray border border-white/5 rounded-2xl p-8 text-center">
+        <div class="w-16 h-16 mx-auto mb-5 rounded-full bg-zeus-gold/10 flex items-center justify-center">
+          <i class="fa-solid fa-user-graduate text-zeus-gold text-3xl"></i>
+        </div>
+        <h3 class="font-bold text-xl mb-3">Entrenadores Certificados</h3>
+        <p class="text-gray-400 text-sm leading-relaxed">Un equipo de profesionales certificados internacionalmente que diseñan tu plan a la medida de tus metas.</p>
+      </div>
+      <div class="card-hover hover:scale-105 transition duration-300 bg-zeus-gray border border-white/5 rounded-2xl p-8 text-center">
+        <div class="w-16 h-16 mx-auto mb-5 rounded-full bg-zeus-gold/10 flex items-center justify-center">
+          <i class="fa-solid fa-crown text-zeus-gold text-3xl"></i>
+        </div>
+        <h3 class="font-bold text-xl mb-3">Zonas VIP</h3>
+        <p class="text-gray-400 text-sm leading-relaxed">Espacios exclusivos con duchas premium, lockers privados y áreas de descanso para socios Black.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SEDES ============ -->
+<section id="sedes" class="bg-zeus-gray py-24 px-6">
+  <div class="max-w-7xl mx-auto">
+    <div class="text-center mb-16">
+      <span class="text-zeus-gold uppercase text-sm font-bold tracking-widest">Encuéntranos en Quito</span>
+      <h2 class="font-display text-5xl md:text-6xl mt-3">NUESTRAS <span class="text-zeus-gold">SEDES</span></h2>
+      <p class="text-gray-400 max-w-xl mx-auto mt-4">Elige la sede Zeus Gym más cercana a ti y empieza a entrenar hoy mismo.</p>
+    </div>
+
+    <div id="sedes-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <!-- Skeleton loaders mientras carga JS -->
+      <div class="skeleton rounded-2xl h-96"></div>
+      <div class="skeleton rounded-2xl h-96"></div>
+      <div class="skeleton rounded-2xl h-96"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PLANES ============ -->
+<section id="planes" class="bg-zeus-dark py-24 px-6">
+  <div class="max-w-7xl mx-auto">
+    <div class="text-center mb-16">
+      <span class="text-zeus-gold uppercase text-sm font-bold tracking-widest">Membresías</span>
+      <h2 class="font-display text-5xl md:text-6xl mt-3">ELIGE TU <span class="text-zeus-gold">PLAN</span></h2>
+      <p class="text-gray-400 max-w-xl mx-auto mt-4">Planes diseñados para cada nivel de compromiso. Sin letra chica, sin ataduras.</p>
+    </div>
+
+    <div id="planes-container" class="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
+      <!-- Skeleton loaders mientras carga JS -->
+      <div class="skeleton rounded-2xl h-[550px]"></div>
+      <div class="skeleton rounded-2xl h-[550px]"></div>
+      <div class="skeleton rounded-2xl h-[550px]"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ REGLAMENTO ============ -->
+<section id="reglamento" class="bg-zeus-gray py-24 px-6">
+  <div class="max-w-4xl mx-auto">
+    <div class="text-center mb-16">
+      <span class="text-zeus-gold uppercase text-sm font-bold tracking-widest">Convivencia</span>
+      <h2 class="font-display text-5xl md:text-6xl mt-3">REGLAMENTO <span class="text-zeus-gold">INTERNO</span></h2>
+      <p class="text-gray-400 max-w-xl mx-auto mt-4">Normas simples para que todos entrenemos en un ambiente respetuoso y seguro.</p>
+    </div>
+
+    <div id="accordion-container" class="flex flex-col gap-4">
+      <!-- Regla 1 -->
+      <div class="accordion-item bg-zeus-dark border border-white/10 rounded-xl overflow-hidden">
+        <button class="accordion-trigger w-full flex items-center justify-between gap-4 px-6 py-5 text-left focus:outline-none">
+          <span class="flex items-center gap-4">
+            <i class="fa-solid fa-shirt text-zeus-gold text-xl w-6 text-center"></i>
+            <span class="font-bold text-lg">Uso obligatorio de toalla</span>
+          </span>
+          <i class="fa-solid fa-chevron-down accordion-icon text-zeus-gold"></i>
+        </button>
+        <div class="accordion-content">
+          <div class="px-6 pb-5 text-gray-400 leading-relaxed">
+            Todo socio debe portar una toalla personal para colocarla sobre los equipos y bancas antes de usarlos. Es una medida de higiene indispensable para el bienestar de toda la comunidad Zeus.
+          </div>
+        </div>
+      </div>
+
+      <!-- Regla 2 -->
+      <div class="accordion-item bg-zeus-dark border border-white/10 rounded-xl overflow-hidden">
+        <button class="accordion-trigger w-full flex items-center justify-between gap-4 px-6 py-5 text-left focus:outline-none">
+          <span class="flex items-center gap-4">
+            <i class="fa-solid fa-weight-hanging text-zeus-gold text-xl w-6 text-center"></i>
+            <span class="font-bold text-lg">Guardar los discos y mancuernas</span>
+          </span>
+          <i class="fa-solid fa-chevron-down accordion-icon text-zeus-gold"></i>
+        </button>
+        <div class="accordion-content">
+          <div class="px-6 pb-5 text-gray-400 leading-relaxed">
+            Al finalizar tu serie, es obligatorio devolver discos, mancuernas y barras a su lugar de origen en el rack. Mantener el área ordenada evita accidentes y facilita el entrenamiento de todos.
+          </div>
+        </div>
+      </div>
+
+      <!-- Regla 3 -->
+      <div class="accordion-item bg-zeus-dark border border-white/10 rounded-xl overflow-hidden">
+        <button class="accordion-trigger w-full flex items-center justify-between gap-4 px-6 py-5 text-left focus:outline-none">
+          <span class="flex items-center gap-4">
+            <i class="fa-solid fa-handshake text-zeus-gold text-xl w-6 text-center"></i>
+            <span class="font-bold text-lg">Respeto ante todo</span>
+          </span>
+          <i class="fa-solid fa-chevron-down accordion-icon text-zeus-gold"></i>
+        </button>
+        <div class="accordion-content">
+          <div class="px-6 pb-5 text-gray-400 leading-relaxed">
+            Exigimos un trato respetuoso entre socios y hacia el personal en todo momento. No se tolerará el acoso, lenguaje ofensivo ni el uso prolongado de equipos mientras otros esperan su turno.
+          </div>
+        </div>
+      </div>
+
+      <!-- Regla 4 -->
+      <div class="accordion-item bg-zeus-dark border border-white/10 rounded-xl overflow-hidden">
+        <button class="accordion-trigger w-full flex items-center justify-between gap-4 px-6 py-5 text-left focus:outline-none">
+          <span class="flex items-center gap-4">
+            <i class="fa-solid fa-shoe-prints text-zeus-gold text-xl w-6 text-center"></i>
+            <span class="font-bold text-lg">Ropa y calzado deportivo adecuado</span>
+          </span>
+          <i class="fa-solid fa-chevron-down accordion-icon text-zeus-gold"></i>
+        </button>
+        <div class="accordion-content">
+          <div class="px-6 pb-5 text-gray-400 leading-relaxed">
+            Es obligatorio el uso de tenis deportivos cerrados y ropa cómoda y limpia. No se permite entrenar con sandalias, botas o ropa de calle por motivos de seguridad e higiene.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer class="bg-black border-t border-white/10 py-12 px-6">
+  <div class="max-w-7xl mx-auto grid md:grid-cols-4 gap-10">
+    <div class="md:col-span-2">
+      <div class="flex items-center gap-2 mb-4">
+        <i class="fa-solid fa-bolt text-zeus-gold text-2xl"></i>
+        <span class="font-display text-2xl tracking-wider text-white">ZEUS <span class="text-zeus-gold">GYM</span></span>
+      </div>
+      <p class="text-gray-500 text-sm max-w-sm leading-relaxed">
+        Forjando titanes desde 2015. Entrena con el poder del Olimpo en cualquiera de nuestras sedes de Quito.
+      </p>
+      <div class="flex gap-4 mt-6">
+        <a href="#" aria-label="Facebook" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:bg-zeus-gold hover:text-zeus-dark transition-all duration-300">
+          <i class="fa-brands fa-facebook-f"></i>
+        </a>
+        <a href="#" aria-label="Instagram" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:bg-zeus-gold hover:text-zeus-dark transition-all duration-300">
+          <i class="fa-brands fa-instagram"></i>
+        </a>
+        <a href="#" aria-label="TikTok" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:bg-zeus-gold hover:text-zeus-dark transition-all duration-300">
+          <i class="fa-brands fa-tiktok"></i>
+        </a>
+        <a href="#" aria-label="Youtube" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:bg-zeus-gold hover:text-zeus-dark transition-all duration-300">
+          <i class="fa-brands fa-youtube"></i>
+        </a>
+      </div>
+    </div>
+    <div>
+      <h4 class="font-bold uppercase text-sm tracking-wide mb-4">Navegación</h4>
+      <ul class="flex flex-col gap-3 text-gray-500 text-sm">
+        <li><a href="#inicio" class="hover:text-zeus-gold transition-colors">Inicio</a></li>
+        <li><a href="#sedes" class="hover:text-zeus-gold transition-colors">Sedes</a></li>
+        <li><a href="#planes" class="hover:text-zeus-gold transition-colors">Planes</a></li>
+        <li><a href="#nosotros" class="hover:text-zeus-gold transition-colors">Quiénes Somos</a></li>
+        <li><a href="#reglamento" class="hover:text-zeus-gold transition-colors">Reglas</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4 class="font-bold uppercase text-sm tracking-wide mb-4">Contacto</h4>
+      <ul class="flex flex-col gap-3 text-gray-500 text-sm">
+        <li class="flex items-center gap-2"><i class="fa-solid fa-phone text-zeus-gold"></i> +593 99 999 9999</li>
+        <li class="flex items-center gap-2"><i class="fa-solid fa-envelope text-zeus-gold"></i> contacto@zeusgym.ec</li>
+        <li class="flex items-center gap-2"><i class="fa-solid fa-clock text-zeus-gold"></i> Lun-Dom 05:00-23:00</li>
+      </ul>
+    </div>
+  </div>
+  <div class="max-w-7xl mx-auto border-t border-white/10 mt-10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-center text-gray-600 text-xs">
+    <span>&copy; <span id="current-year"></span> Zeus Gym. Todos los derechos reservados.</span>
+    <a href="admin.html" class="text-gray-600 hover:text-zeus-gold transition-colors duration-200 flex items-center gap-1.5">
+      <i class="fa-solid fa-user-shield"></i> Panel de Administración
+    </a>
+  </div>
+</footer>
+
+<!-- ============ BOTÓN FLOTANTE WHATSAPP ============ -->
+<a href="https://wa.me/593999999999?text=Hola%20Zeus%20Gym%2C%20quiero%20más%20información" target="_blank" rel="noopener noreferrer" aria-label="Contactar por WhatsApp"
+   class="whatsapp-float fixed bottom-6 right-6 z-50 bg-[#25D366] w-16 h-16 rounded-full flex items-center justify-center shadow-2xl hover:scale-110 transition-transform duration-300">
+  <i class="fa-brands fa-whatsapp text-white text-3xl"></i>
+</a>
+
+<!-- ============ MODAL DE INSCRIPCIÓN ============ -->
+<div id="inscripcion-modal" class="hidden fixed inset-0 z-[60] flex items-center justify-center p-4">
+  <div id="modal-overlay" class="absolute inset-0 bg-black/80 backdrop-blur-sm"></div>
+
+  <div class="modal-box relative z-10 w-full max-w-md bg-zeus-gray border border-white/10 rounded-2xl p-8 shadow-2xl scale-95 opacity-0">
+    <button id="modal-close-btn" type="button" aria-label="Cerrar" class="absolute top-4 right-4 text-gray-400 hover:text-zeus-gold text-xl transition-colors duration-200">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+
+    <div class="mb-6">
+      <span class="text-zeus-gold uppercase text-xs font-bold tracking-widest">Únete al Olimpo</span>
+      <h3 id="modal-title" class="font-display text-4xl mt-1 leading-none">Inscripción</h3>
+      <p class="text-gray-400 text-sm mt-2">Completa tus datos y te contactaremos al instante por WhatsApp.</p>
+    </div>
+
+    <form id="inscripcion-form" class="flex flex-col gap-5" novalidate>
+      <div>
+        <label for="input-nombre" class="block text-sm font-semibold text-gray-300 mb-2">Nombre Completo</label>
+        <input type="text" id="input-nombre" name="nombre" required placeholder="Ej: Juan Pérez"
+               class="w-full bg-zeus-dark border border-white/10 rounded-lg px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-zeus-gold transition-all duration-200">
+      </div>
+
+      <div>
+        <label for="input-correo" class="block text-sm font-semibold text-gray-300 mb-2">Correo Electrónico</label>
+        <input type="email" id="input-correo" name="correo" required placeholder="Ej: juan@correo.com"
+               class="w-full bg-zeus-dark border border-white/10 rounded-lg px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-zeus-gold transition-all duration-200">
+      </div>
+
+      <div>
+        <label for="input-celular" class="block text-sm font-semibold text-gray-300 mb-2">Celular</label>
+        <input type="tel" id="input-celular" name="celular" required placeholder="Ej: 0991234567"
+               class="w-full bg-zeus-dark border border-white/10 rounded-lg px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-zeus-gold transition-all duration-200">
+      </div>
+
+      <div>
+        <label for="input-sede" class="block text-sm font-semibold text-gray-300 mb-2">Sede de Quito</label>
+        <div class="relative">
+          <select id="input-sede" name="sede" required
+                  class="w-full appearance-none bg-zeus-dark border border-white/10 rounded-lg pl-4 pr-10 py-3 text-white focus:outline-none focus:ring-2 focus:ring-zeus-gold transition-all duration-200">
+            <option value="" disabled selected>Selecciona una sede</option>
+          </select>
+          <i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 text-sm pointer-events-none"></i>
+        </div>
+      </div>
+
+      <p id="form-error" class="hidden text-red-400 text-sm flex items-center gap-2">
+        <i class="fa-solid fa-triangle-exclamation"></i> <span id="form-error-text"></span>
+      </p>
+
+      <button type="submit" id="modal-submit-btn"
+              class="mt-2 w-full bg-zeus-gold text-zeus-dark font-extrabold uppercase text-sm px-6 py-4 rounded-full hover:bg-white hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2 shadow-lg shadow-zeus-gold/30">
+        <i class="fa-brands fa-whatsapp text-lg"></i> Confirmar Registro
+      </button>
+    </form>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

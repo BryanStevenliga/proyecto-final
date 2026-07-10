@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zeus Gym | Panel de Administración</title>
+<meta name="robots" content="noindex, nofollow">
+
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com"></script>
+<!-- FontAwesome CDN -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Bebas+Neue&display=swap" rel="stylesheet">
+
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          'zeus-gold': '#FFB612',
+          'zeus-dark': '#0A0A0A',
+          'zeus-gray': '#141414',
+          'zeus-gray-light': '#1F1F1F',
+        },
+        fontFamily: {
+          'sans': ['Inter', 'sans-serif'],
+          'display': ['Bebas Neue', 'sans-serif'],
+        },
+      }
+    }
+  }
+</script>
+
+<style>
+  body { font-family: 'Inter', sans-serif; background-color: #0A0A0A; }
+  .font-display { font-family: 'Bebas Neue', sans-serif; letter-spacing: 0.03em; }
+
+  ::-webkit-scrollbar { width: 10px; }
+  ::-webkit-scrollbar-track { background: #0A0A0A; }
+  ::-webkit-scrollbar-thumb { background: #FFB612; border-radius: 10px; }
+  ::-webkit-scrollbar-thumb:hover { background: #e0a30f; }
+
+  .modal-box {
+    transition: transform 0.3s ease, opacity 0.3s ease;
+  }
+
+  input[type="text"], input[type="email"], input[type="tel"], select {
+    color-scheme: dark;
+  }
+
+  .skeleton-row {
+    background: linear-gradient(90deg, #1a1a1a 25%, #232323 50%, #1a1a1a 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+  }
+  @keyframes skeleton-loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+</style>
+</head>
+<body class="bg-zeus-dark text-white antialiased min-h-screen">
+
+<!-- ============ TOPBAR ============ -->
+<header class="border-b border-white/10 bg-zeus-gray/60 backdrop-blur">
+  <div class="max-w-7xl mx-auto px-6 py-6 flex flex-wrap items-center justify-between gap-4">
+    <div class="flex items-center gap-3">
+      <i class="fa-solid fa-bolt text-zeus-gold text-3xl"></i>
+      <div>
+        <h1 class="font-display text-3xl leading-none tracking-wide">ZEUS <span class="text-zeus-gold">GYM</span></h1>
+        <p class="text-gray-400 text-xs uppercase tracking-widest mt-1">Panel de Administración · Miembros</p>
+      </div>
+    </div>
+
+    <button id="btn-nuevo-miembro" type="button"
+            class="bg-zeus-gold text-zeus-dark font-bold uppercase text-sm px-6 py-3 rounded-full hover:bg-white hover:scale-105 transition-all duration-300 shadow-lg shadow-zeus-gold/20 flex items-center gap-2">
+      <i class="fa-solid fa-user-plus"></i> Registrar Nuevo Miembro
+    </button>
+  </div>
+</header>
+
+<!-- ============ CONTENIDO PRINCIPAL ============ -->
+<main class="max-w-7xl mx-auto px-6 py-10">
+
+  <div id="alert-box" class="hidden mb-6 rounded-xl px-5 py-4 text-sm font-medium flex items-center gap-3"></div>
+
+  <div class="bg-zeus-gray border border-white/10 rounded-2xl overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full text-left border-collapse">
+        <thead>
+          <tr class="bg-zeus-gray-light text-gray-400 text-xs uppercase tracking-wider">
+            <th class="px-6 py-4 font-semibold">Nombre</th>
+            <th class="px-6 py-4 font-semibold">Email</th>
+            <th class="px-6 py-4 font-semibold">Celular</th>
+            <th class="px-6 py-4 font-semibold">Sede</th>
+            <th class="px-6 py-4 font-semibold">Plan</th>
+            <th class="px-6 py-4 font-semibold text-right">Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="members-tbody" class="divide-y divide-white/5">
+          <tr>
+            <td colspan="6" class="px-6 py-6"><div class="skeleton-row h-6 rounded"></div></td>
+          </tr>
+          <tr>
+            <td colspan="6" class="px-6 py-6"><div class="skeleton-row h-6 rounded"></div></td>
+          </tr>
+          <tr>
+            <td colspan="6" class="px-6 py-6"><div class="skeleton-row h-6 rounded"></div></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</main>
+
+<!-- ============ MODAL: REGISTRAR / EDITAR MIEMBRO ============ -->
+<div id="member-modal" class="hidden fixed inset-0 z-[60] flex items-center justify-center p-4">
+  <div id="modal-overlay" class="absolute inset-0 bg-black/80 backdrop-blur-sm"></div>
+
+  <div class="modal-box relative z-10 w-full max-w-lg bg-zeus-gray border border-white/10 rounded-2xl p-8 shadow-2xl scale-95 opacity-0">
+    <button id="modal-close-btn" type="button" aria-label="Cerrar" class="absolute top-4 right-4 text-gray-400 hover:text-zeus-gold text-xl transition-colors duration-200">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+
+    <div class="mb-6">
+      <span class="text-zeus-gold uppercase text-xs font-bold tracking-widest">Zeus Gym</span>
+      <h3 id="modal-title" class="font-display text-4xl mt-1 leading-none">Registrar Miembro</h3>
+    </div>
+
+    <form id="member-form" class="flex flex-col gap-5" novalidate>
+      <input type="hidden" id="member-id" name="id" value="">
+
+      <div class="grid sm:grid-cols-2 gap-5">
+        <div>
+          <label for="input-nombre" class="block text-sm font-semibold text-gray-300 mb-2">Nombre</label>
+          <input type="text" id="input-nombre" name="nombre" required placeholder="Ej: Juan"
+                 class="w-full bg-zeus-dark border border-white/10 rounded-lg px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-zeus-gold transition-all duration-200">
+        </div>
+        <div>
+          <label for="input-apellido" class="block text-sm font-semibold text-gray-300 mb-2">Apellido</label>
+          <input type="text" id="input-apellido" name="apellido" required placeholder="Ej: Pérez"
+                 class="w-full bg-zeus-dark border border-white/10 rounded-lg px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-zeus-gold transition-all duration-200">
+        </div>
+      </div>
+
+      <div>
+        <label for="input-email" class="block text-sm font-semibold text-gray-300 mb-2">Correo Electrónico</label>
+        <input type="email" id="input-email" name="email" required placeholder="Ej: juan.perez@zeusgym.com"
+               class="w-full bg-zeus-dark border border-white/10 rounded-lg px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-zeus-gold transition-all duration-200">
+      </div>
+
+      <div>
+        <label for="input-celular" class="block text-sm font-semibold text-gray-300 mb-2">Celular</label>
+        <input type="tel" id="input-celular" name="celular" required placeholder="Ej: 0991234567"
+               class="w-full bg-zeus-dark border border-white/10 rounded-lg px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-zeus-gold transition-all duration-200">
+      </div>
+
+      <div class="grid sm:grid-cols-2 gap-5">
+        <div>
+          <label for="input-sede" class="block text-sm font-semibold text-gray-300 mb-2">Sede</label>
+          <div class="relative">
+            <select id="input-sede" name="sede_id" required
+                    class="w-full appearance-none bg-zeus-dark border border-white/10 rounded-lg pl-4 pr-10 py-3 text-white focus:outline-none focus:ring-2 focus:ring-zeus-gold transition-all duration-200">
+              <option value="" disabled selected>Selecciona una sede</option>
+            </select>
+            <i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 text-sm pointer-events-none"></i>
+          </div>
+        </div>
+        <div>
+          <label for="input-plan" class="block text-sm font-semibold text-gray-300 mb-2">Plan</label>
+          <div class="relative">
+            <select id="input-plan" name="plan_id" required
+                    class="w-full appearance-none bg-zeus-dark border border-white/10 rounded-lg pl-4 pr-10 py-3 text-white focus:outline-none focus:ring-2 focus:ring-zeus-gold transition-all duration-200">
+              <option value="" disabled selected>Selecciona un plan</option>
+            </select>
+            <i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 text-sm pointer-events-none"></i>
+          </div>
+        </div>
+      </div>
+
+      <p id="form-error" class="hidden text-red-400 text-sm flex items-center gap-2">
+        <i class="fa-solid fa-triangle-exclamation"></i> <span id="form-error-text"></span>
+      </p>
+
+      <button type="submit" id="modal-submit-btn"
+              class="mt-2 w-full bg-zeus-gold text-zeus-dark font-extrabold uppercase text-sm px-6 py-4 rounded-full hover:bg-white hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2 shadow-lg shadow-zeus-gold/30">
+        <i class="fa-solid fa-floppy-disk"></i> <span id="modal-submit-text">Guardar Miembro</span>
+      </button>
+    </form>
+  </div>
+</div>
+
+<script src="admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,95 @@
+name: Deploy Zeus Gym
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      fresh_seed:
+        description: "Ejecutar migrate:fresh --seed (BORRA todos los datos actuales) en vez de migrate normal"
+        type: boolean
+        default: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout del repositorio
+        uses: actions/checkout@v4
+
+      - name: Instalar PHP y Composer
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.2"
+
+      - name: Instalar dependencias de Laravel (vendor/ no vive en git)
+        working-directory: zeusgym-back
+        run: composer install --no-dev --optimize-autoloader --no-interaction
+
+      - name: Escribir el .env de producción
+        working-directory: zeusgym-back
+        run: echo "${{ secrets.BACKEND_ENV_FILE }}" > .env
+
+      - name: Copiar backend al VPS (carpeta temporal)
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: ${{ secrets.VPS_PORT }}
+          source: "zeusgym-back/*,zeusgym-back/.env"
+          target: "/home/${{ secrets.VPS_USER }}/deploy_tmp/backend"
+          strip_components: 1
+
+      - name: Copiar frontend al VPS (carpeta temporal)
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: ${{ secrets.VPS_PORT }}
+          source: "zeusgym-front/*"
+          target: "/home/${{ secrets.VPS_USER }}/deploy_tmp/frontend"
+          strip_components: 1
+
+      - name: Publicar en los contenedores y migrar
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: ${{ secrets.VPS_PORT }}
+          script: |
+            set -e
+            CONF=/etc/apache2/sites-enabled/000-default.conf
+            TMP=/home/${{ secrets.VPS_USER }}/deploy_tmp
+
+            # --- Backend: copiar código dentro del contenedor de Laravel ---
+            docker cp "$TMP/backend/." backzeusgym_container:/var/www/html/
+
+            # --- Frontend: copiar el sitio estático dentro del contenedor nginx ---
+            docker cp "$TMP/frontend/." zeusgym_container:/usr/share/nginx/html/
+
+            # --- Apache: DocumentRoot debe apuntar a /public (idempotente: el ancla $ evita reaplicarlo dos veces) ---
+            docker exec backzeusgym_container sed -i "s#DocumentRoot /var/www/html\$#DocumentRoot /var/www/html/public#" "$CONF"
+
+            # --- AllowOverride All para que funcione el .htaccess de Laravel (idempotente) ---
+            docker exec backzeusgym_container bash -c "grep -q 'AllowOverride All' $CONF || printf '\n<Directory /var/www/html/public>\n    Options Indexes FollowSymLinks\n    AllowOverride All\n    Require all granted\n</Directory>\n' >> $CONF"
+
+            docker exec backzeusgym_container a2enmod rewrite
+            docker exec backzeusgym_container apache2ctl configtest
+            docker exec backzeusgym_container apache2ctl graceful
+
+            # --- Permisos y caché de Laravel ---
+            docker exec backzeusgym_container chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+            docker exec backzeusgym_container chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+            docker exec backzeusgym_container php artisan config:clear
+
+            # --- Migraciones ---
+            if [ "${{ github.event.inputs.fresh_seed }}" = "true" ]; then
+              docker exec backzeusgym_container php artisan migrate:fresh --seed --force
+            else
+              docker exec backzeusgym_container php artisan migrate --force
+            fi
+
+            rm -rf "$TMP"
