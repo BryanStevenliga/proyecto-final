@@ -1,3 +1,5 @@
+DESPLIEGUE
+
 Gimnasio Zeus - Proyecto
 Arquitectura del sistema
 El proyecto sigue una estructura monorepositorio, separando la lógica del lado del servidor de la interfaz del lado del cliente. Esta separación permite que el backend funcione como una API REST pura mientras que el frontend permanece como un sitio estático de alto rendimiento.
@@ -283,3 +285,5 @@ on:
 ```text
 DB_CONNECTION=sqlite
 ```
+![Uploading image.png…]()
+
