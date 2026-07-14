@@ -122,12 +122,8 @@ sequenceDiagram
 - El contenedor backend utiliza Apache con PHP 8.2 y sirve la aplicación Laravel desde el directorio `/public` [19](#0-18) 
 - El contenedor frontend utiliza nginx para servir los archivos estáticos del frontend vanilla HTML/JS [20](#0-19) 
 - La base de datos soporta SQLite para desarrollo local y PostgreSQL para producción [21](#0-20) 
-- El workflow incluye medidas defensivas como la eliminación del `.env` anterior antes de copiar el nuevo [7](#0-6) 
 
-Wiki pages you might want to explore:
-- [Zeus Gym — Project Overview (BryanStevenliga/proyecto-final)](/wiki/BryanStevenliga/proyecto-final#1)
-
-### Citations
+### Citas
 
 **File:** .github/workflows/deploy.yml (L1-11)
 ```yaml
